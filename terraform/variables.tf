@@ -21,3 +21,9 @@ variable "environment" {
   type        = string
   default     = "production"
 }
+
+variable "cloudfront_price_class" {
+  description = "CloudFront price class (PriceClass_100 = cheapest, US/EU only)"
+  type        = string
+  default     = "PriceClass_100"
+}

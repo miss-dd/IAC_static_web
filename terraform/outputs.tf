@@ -5,12 +5,19 @@ output "bucket_name" {
   value       = aws_s3_bucket.website.bucket
 }
 
-output "website_url" {
-  description = "Public URL of your restaurant website"
+
+output "cloudfront_url" {
+  description = "Your live website URL (HTTPS via CloudFront)"
+  value       = "https://${aws_cloudfront_distribution.website.domain_name}"
+}
+
+output "cloudfront_distribution_id" {
+  description = "CloudFront distribution ID (needed for cache invalidation in Week 3)"
+  value       = aws_cloudfront_distribution.website.id
+}
+
+output "s3_website_url" {
+  description = "Direct S3 URL (HTTP only, now private — use cloudfront_url instead)"
   value       = "http://${aws_s3_bucket_website_configuration.website.website_endpoint}"
 }
 
-output "bucket_arn" {
-  description = "ARN of the S3 bucket (needed in Week 2 for CloudFront)"
-  value       = aws_s3_bucket.website.arn
-}
