@@ -86,19 +86,13 @@ resource "aws_iam_role_policy" "github_actions" {
             Action   = ["cloudfront:*"]
             Resource = "*"
             },
-      # IAM: read-only (Terraform needs to check existing roles)
-      {
-        Sid    = "IAMReadOnly"
-        Effect = "Allow"
-        Action = [
-          "iam:GetOpenIDConnectProvider",
-          "iam:GetRole",
-          "iam:GetRolePolicy",
-          "iam:ListRolePolicies",
-          "iam:ListAttachedRolePolicies"
-        ]
-        Resource = "*"
-      }
+     # IAM: full access for Terraform to manage roles and OIDC
+            {
+            Sid      = "IAMAccess"
+            Effect   = "Allow"
+            Action   = ["iam:*"]
+            Resource = "*"
+            }
     ]
   })
 }

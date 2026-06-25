@@ -6,6 +6,10 @@
 resource "aws_s3_bucket" "website" {
   bucket = var.bucket_name
 
+lifecycle {
+    prevent_destroy = true   # safety net — Terraform can never delete this bucket
+  }
+
   tags = {
     Name        = var.restaurant_name
     Environment = var.environment
