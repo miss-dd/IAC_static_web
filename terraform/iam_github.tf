@@ -79,25 +79,13 @@ resource "aws_iam_role_policy" "github_actions" {
         ]
         Resource = "arn:aws:dynamodb:${var.aws_region}:${data.aws_caller_identity.current.account_id}:table/terraform-lock"
       },
-      # CloudFront: manage distribution + invalidations
-      {
-        Sid    = "CloudFrontAccess"
-        Effect = "Allow"
-        Action = [
-          "cloudfront:CreateDistribution",
-          "cloudfront:UpdateDistribution",
-          "cloudfront:GetDistribution",
-          "cloudfront:DeleteDistribution",
-          "cloudfront:CreateInvalidation",
-          "cloudfront:GetInvalidation",
-          "cloudfront:CreateOriginAccessControl",
-          "cloudfront:GetOriginAccessControl",
-          "cloudfront:DeleteOriginAccessControl",
-          "cloudfront:ListDistributions",
-          "cloudfront:TagResource"
-        ]
-        Resource = "*"
-      },
+     # CloudFront: full access (scoped to this role only)
+            {
+            Sid      = "CloudFrontAccess"
+            Effect   = "Allow"
+            Action   = ["cloudfront:*"]
+            Resource = "*"
+            },
       # IAM: read-only (Terraform needs to check existing roles)
       {
         Sid    = "IAMReadOnly"
