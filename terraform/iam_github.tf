@@ -60,18 +60,29 @@ resource "aws_iam_role_policy" "github_actions" {
         Sid    = "S3Access"
         Effect = "Allow"
         Action = [
-          "s3:GetObject",
-          "s3:PutObject",
-          "s3:DeleteObject",
-          "s3:ListBucket",
-          "s3:GetBucketLocation",
-          "s3:GetBucketPolicy",
-          "s3:PutBucketPolicy",
-          "s3:CreateBucket",
-          "s3:PutBucketWebsite",
-          "s3:PutPublicAccessBlock",
-          "s3:GetPublicAccessBlock"
-        ]
+            "s3:GetObject",
+            "s3:PutObject",
+            "s3:DeleteObject",
+            "s3:ListBucket",
+            "s3:GetBucketLocation",
+            "s3:GetBucketPolicy",
+            "s3:PutBucketPolicy",
+            "s3:CreateBucket",
+            "s3:PutBucketWebsite",
+            "s3:PutPublicAccessBlock",
+            "s3:GetPublicAccessBlock",
+            "s3:GetBucketAcl",
+            "s3:PutBucketAcl",
+            "s3:GetBucketWebsite",
+            "s3:GetEncryptionConfiguration",
+            "s3:GetBucketObjectLockConfiguration",
+            "s3:GetBucketVersioning",
+            "s3:GetBucketRequestPayment",
+            "s3:GetBucketLogging",
+            "s3:GetLifecycleConfiguration",
+            "s3:GetReplicationConfiguration",
+            "s3:GetBucketTagging"
+]
         Resource = [
           "arn:aws:s3:::${var.bucket_name}",
           "arn:aws:s3:::${var.bucket_name}/*",
