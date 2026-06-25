@@ -129,10 +129,46 @@ terraform destroy
 
 ---
 
-## Coming Up
+---
 
-| Week | What you'll add |
-|------|----------------|
-| Week 2 | CloudFront CDN + HTTPS (free SSL) |
-| Week 3 | GitHub Actions — auto-deploy on git push |
-| Week 4 | Remote state (S3 + DynamoDB), PR previews |
+---
+
+## Week 2 – CloudFront + HTTPS
+
+### What changed from Week 1
+- S3 bucket is now **private** — no direct public access
+- **CloudFront OAC** (Origin Access Control) is the only thing allowed to read S3
+- All HTTP traffic is automatically **redirected to HTTPS**
+- Custom 404 page served via CloudFront error responses
+
+### Deploy steps
+
+```bash
+cd terraform
+
+# Preview the changes (you'll see CloudFront resources being added)
+terraform plan
+
+# Apply — takes 5–10 minutes (CloudFront distributions are slow to provision)
+terraform apply
+```
+
+After apply you'll see:
+```
+Outputs:
+bucket_name                = "la-bella-cucina-yourname-2024"
+cloudfront_url             = "https://d1234abcd.cloudfront.net"   ← use this!
+cloudfront_distribution_id = "E1234ABCD"
+s3_website_url             = "http://..."                         ← now private
+```
+
+Open `cloudfront_url` — your site now runs on **HTTPS**. 🎉
+
+> ⏳ CloudFront takes 5–10 minutes to deploy globally. If you get an error right after apply, wait a minute and refresh.
+
+### Re-upload your files
+
+After apply, re-sync your website files (S3 content is unchanged, but good habit):
+```bash
+aws s3 sync website/ s3://YOUR_BUCKET_NAME
+```

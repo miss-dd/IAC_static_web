@@ -1,0 +1,84 @@
+name: Deploy Restaurant Website
+
+on:
+  push:
+    branches:
+      - main
+
+# Permissions needed for OIDC token (keyless AWS auth — no hardcoded keys!)
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: eu-north-1
+  TF_VERSION: 1.7.0
+
+jobs:
+  deploy:
+    name: Terraform + S3 Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Checkout code ──────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Authenticate to AWS via OIDC (no access keys needed) ──
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # ── 3. Install Terraform ──────────────────────────────────
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      # ── 4. Terraform Init (connects to S3 remote backend) ────
+      - name: Terraform Init
+        working-directory: terraform
+        run: terraform init
+
+      # ── 5. Terraform Validate ─────────────────────────────────
+      - name: Terraform Validate
+        working-directory: terraform
+        run: terraform validate
+
+      # ── 6. Terraform Plan (shows what will change) ───────────
+      - name: Terraform Plan
+        working-directory: terraform
+        run: terraform plan -var="bucket_name=${{ secrets.S3_BUCKET_NAME }}"
+
+      # ── 7. Terraform Apply (provisions / updates AWS infra) ──
+      - name: Terraform Apply
+        working-directory: terraform
+        run: |
+          terraform apply -auto-approve \
+            -var="bucket_name=${{ secrets.S3_BUCKET_NAME }}"
+
+      # ── 8. Sync website files to S3 ──────────────────────────
+      - name: Deploy website files to S3
+        run: |
+          aws s3 sync website/ s3://${{ secrets.S3_BUCKET_NAME }} \
+            --delete \
+            --cache-control "max-age=3600"
+
+      # ── 9. Invalidate CloudFront cache ────────────────────────
+      # Forces CloudFront to serve the new files instead of cached ones
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CF_DISTRIBUTION_ID }} \
+            --paths "/*"
+
+      # ── 10. Print live URL ────────────────────────────────────
+      - name: Print website URL
+        run: |
+          echo "✅ Deployment complete!"
+          echo "🌍 Live at: https://$(aws cloudfront get-distribution \
+            --id ${{ secrets.CF_DISTRIBUTION_ID }} \
+            --query 'Distribution.DomainName' \
+            --output text)"
