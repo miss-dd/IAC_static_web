@@ -35,7 +35,7 @@ resource "aws_iam_role" "github_actions" {
           }
           StringLike = {
             # IMPORTANT: Replace with your GitHub username and repo name
-            "token.actions.githubusercontent.com:sub" = "IAC_static_web:miss-dd/restaurant-website:ref:refs/heads/main"
+            "token.actions.githubusercontent.com:sub" = "repo:miss-dd/restaurant-website:ref:refs/heads/main"
           }
         }
       }
