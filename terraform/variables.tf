@@ -5,9 +5,8 @@ variable "aws_region" {
 }
 
 variable "bucket_name" {
-  description = "S3 bucket name (must be globally unique)"
+  description = "S3 bucket name for the website (must be globally unique)"
   type        = string
-  default     = "my-restaurant-website-fragrance-1"
 }
 
 variable "restaurant_name" {
@@ -23,7 +22,23 @@ variable "environment" {
 }
 
 variable "cloudfront_price_class" {
-  description = "CloudFront price class (PriceClass_100 = cheapest, US/EU only)"
+  description = "CloudFront price class"
   type        = string
   default     = "PriceClass_100"
+}
+
+variable "github_username" {
+  description = "Your GitHub username"
+  type        = string
+}
+
+variable "github_repo" {
+  description = "Your GitHub repository name"
+  type        = string
+  default     = "iac_static_web"
+}
+
+variable "tfstate_bucket_name" {
+  description = "S3 bucket name for Terraform remote state"
+  type        = string
 }

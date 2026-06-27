@@ -1,7 +1,8 @@
-# Copy this file to terraform.tfvars and update the values
-# IMPORTANT: Change bucket_name to something globally unique (add your name or random suffix)
-
-aws_region      = "us-east-1"
-bucket_name     = "la-bella-cucina-yourname-2024"   # <-- Change this!
-restaurant_name = "La Bella Cucina"
-environment     = "production"
+aws_region          = "eu-north-1"
+bucket_name         = "la-bella-cucina-fragrance-1"
+restaurant_name     = "La Bella Cucina"
+environment         = "production"
+cloudfront_price_class = "PriceClass_100"
+github_username     = "YOUR_GITHUB_USERNAME"
+github_repo         = "iac_static_web"
+tfstate_bucket_name = "YOUR-TFSTATE-BUCKET-NAME"

@@ -1,23 +1,19 @@
-# After running terraform apply, these values are printed to your terminal
-
 output "bucket_name" {
-  description = "Name of the S3 bucket"
-  value       = aws_s3_bucket.website.bucket
+  description = "Name of the S3 website bucket"
+  value       = module.s3.bucket_name
 }
 
-
 output "cloudfront_url" {
-  description = "Your live website URL (HTTPS via CloudFront)"
-  value       = "https://${aws_cloudfront_distribution.website.domain_name}"
+  description = "Live website URL (HTTPS via CloudFront)"
+  value       = "https://${module.cloudfront.domain_name}"
 }
 
 output "cloudfront_distribution_id" {
-  description = "CloudFront distribution ID (needed for cache invalidation in Week 3)"
-  value       = aws_cloudfront_distribution.website.id
+  description = "CloudFront distribution ID (CF_DISTRIBUTION_ID GitHub secret)"
+  value       = module.cloudfront.distribution_id
 }
 
-output "s3_website_url" {
-  description = "Direct S3 URL (HTTP only, now private — use cloudfront_url instead)"
-  value       = "http://${aws_s3_bucket_website_configuration.website.website_endpoint}"
+output "github_actions_role_arn" {
+  description = "IAM role ARN for GitHub Actions (AWS_ROLE_ARN GitHub secret)"
+  value       = module.iam.github_actions_role_arn
 }
-
