@@ -51,12 +51,18 @@ resource "aws_iam_role_policy" "github_actions" {
         Effect   = "Allow"
         Action   = ["s3:*"]
         Resource = [
-          "arn:aws:s3:::${var.bucket_name}",
-          "arn:aws:s3:::${var.bucket_name}/*",
-          "arn:aws:s3:::${var.tfstate_bucket_name}",
-          "arn:aws:s3:::${var.tfstate_bucket_name}/*"
+            "arn:aws:s3:::${var.bucket_name}",
+            "arn:aws:s3:::${var.bucket_name}/*",
+            "arn:aws:s3:::${var.tfstate_bucket_name}",
+            "arn:aws:s3:::${var.tfstate_bucket_name}/*"
         ]
-      },
+        },
+        {
+        Sid      = "S3ListAll"
+        Effect   = "Allow"
+        Action   = ["s3:ListAllMyBuckets", "s3:GetBucketLocation"]
+        Resource = "*"
+},
       {
         Sid    = "DynamoDBLock"
         Effect = "Allow"
